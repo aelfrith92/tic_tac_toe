@@ -166,6 +166,27 @@ def define_gmode():
     return 'PC' if mode == 1 else 'H'
 
 
+def check_win(p1, p2):
+    """
+    This function checks whether someone has won
+    """
+    winning_combinations = ((1, 2, 3), (4, 5, 6), (7, 8, 9), (1, 4, 7),
+                            (2, 5, 8), (3, 6, 9), (1, 5, 9), (3, 5, 7))
+
+    for i in winning_combinations:
+        check_list_p1 = [True if p1[x] in i else False for x in range(len(p1))]
+        check_list_p2 = [True if p2[x] in i else False for x in range(len(p2))]
+        print(f'Tuple checked: {i}\nP1 checklist is:',
+              f'{check_list_p1}\nP2 checklist is: {check_list_p2}')
+        if check_list_p1.count(True) == 3:
+            return ['p1', True]
+        elif check_list_p2.count(True) == 3:
+            return ['p2', True]
+        else:
+            continue
+    return ['', False]
+
+
 def main():
     """
     Core function of the game
@@ -225,6 +246,12 @@ def main():
             player1.append(played_cell)
             player1.sort()
         print_grid(grid_values)
+        if i > 4:
+            check = check_win(player1, player2)
+            if check[1]:
+                print("The winner is",
+                      f"{'Player1' if check[0] == 'p1' else 'Player2'}")
+                break
         print(f'Player1 has played {player1} so far...\nPlayer2 has played',
               f'{player2} so far...\nOverall grid: {grid_values}')
 
