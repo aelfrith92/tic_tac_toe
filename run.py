@@ -57,7 +57,7 @@ def validation():
     return [True, symbol]
 
 
-def symbol_func(p1_has_chosen):
+def symbol_func(mode, p1_has_chosen):
     """
     It assigns a symbol to the dictionary 'preferences'
     """
@@ -82,12 +82,27 @@ def symbol_func(p1_has_chosen):
         # At this point, the code should check whether player 2 is
         # human or PC. If P2 is human, repeats the symbol choice and
         # assigns it, otherwise random assignment to preferences['p2']
-        if p1_has_chosen == 'O':
-            return random.choice(['X', '★'])
-        elif p1_has_chosen == 'X':
-            return random.choice(['O', '★'])
+        if mode == 'PC':
+            if p1_has_chosen == 'O':
+                return random.choice(['X', '★'])
+            elif p1_has_chosen == 'X':
+                return random.choice(['O', '★'])
+            else:
+                return random.choice(['O', 'X'])
         else:
-            return random.choice(['O', 'X'])
+            while True:
+                # The following variable receives a list from
+                # func validation() above.
+                symbol_list = validation()
+                if symbol_list[0] and \
+                   return_choice(symbol_list[1]) != p1_has_chosen:
+                    symbol = symbol_list[1]
+                    break
+                else:
+                    print('\nPlayer2 must choose a different symbol to play.',
+                          'Please, choose another option.\nPlayer1 has picked',
+                          f'{p1_has_chosen} already.\n')
+            return return_choice(symbol)
 
 
 def validate_play(cells):
@@ -132,6 +147,25 @@ def pc_move(cells):
     return random_index
 
 
+def define_gmode():
+    """
+    This function defines and validates the game mode input
+    """
+    while True:
+        try:
+            print('\nGAME MODE\n')
+            mode = int(input("Enter '1' for 1vPC and '2' for 1v1\n"))
+            if mode < 1 or mode > 2:
+                print('\nInvalid input. Choose a valid mode, by',
+                      'entering 1 or 2')
+                raise ValueError('Input out of available range')
+            else:
+                break
+        except ValueError:
+            print('Try again. Choose 1 or 2\n')
+    return 'PC' if mode == 1 else 'H'
+
+
 def main():
     """
     Core function of the game
@@ -146,26 +180,22 @@ def main():
     player1 = []
     # The following variable stores player2's moves
     player2 = []
+    # The user has the chance to set a few options when the game loop
+    # starts for the first time or it actually ends
     # The following variable stores the Player2 nature: human VS PC
-    # Default is PC, unless differently specified later in the process
-    p2_nature = 'PC'
+    # Enter game mode: 1v1 or 1vPC.
+    p2_nature = define_gmode()
     # The following dictionary determines which symbol the player has
     # chosen to play with
     preferences = {
         'p1': '',
         'p2': ''
     }
-    # The user has the chance to set a few options when the game loop
-    # starts for the first time or it actually ends
-    # Enter game mode: 1v1 or 1vPC. For the time being, the main game
-    # loop is going to be designed first. Default mode: 1vPC
-    # print("Game Mode\nEnter '1' for 1vPC and '2' for 1v1")
-    # gmode = input("Default game mode: 1\n")
     while preferences['p1'] == '' or preferences['p2'] == '':
         if preferences['p1'] == '':
-            preferences['p1'] = symbol_func(False)
+            preferences['p1'] = symbol_func(p2_nature, False)
         else:
-            preferences['p2'] = symbol_func(preferences['p1'])
+            preferences['p2'] = symbol_func(p2_nature, preferences['p1'])
     print(f"\nPlayer1 symbol is: {preferences['p1']}, Player2",
           f"symbol is: {preferences['p2']}")
 
@@ -182,7 +212,11 @@ def main():
             if p2_nature == 'PC':
                 pc_index = pc_move(grid_values)
                 grid_values[pc_index] = preferences['p2']
-            player2.append(pc_index + 1)
+                player2.append(pc_index + 1)
+            else:
+                played_cell = play(grid_values)
+                grid_values[played_cell - 1] = preferences['p2']
+                player2.append(played_cell)
             player2.sort()
         else:
             print('player 1 turn')
