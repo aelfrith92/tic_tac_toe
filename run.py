@@ -90,15 +90,55 @@ def symbol_func(p1_has_chosen):
             return random.choice(['O', 'X'])
 
 
+def validate_play(cells):
+    """
+    This function validates the input once started playing
+    """
+    chosen_cell = input('Enter the cell number to play your turn\n')
+    try:
+        chosen_cell = int(chosen_cell)
+        # temporary check
+        if cells[chosen_cell] == ' ':
+            placeholder = '[spazio]'
+        else:
+            placeholder = cells[chosen_cell]
+        # fine temporary check
+        print(f'Input converted into int: {chosen_cell}. Content',
+              f'of the cell picked: {placeholder}. The list',
+              f'passed as parameter is:\n{cells}')
+        if chosen_cell < 1 or chosen_cell > 9 or cells[chosen_cell - 1] != ' ':
+            print('\nInvalid input. Choose an empty cell, by',
+                  'entering a number between 1 and 9')
+            raise ValueError('Input out of available range')
+    except ValueError:
+        print('Try again. Choose an empty cell\n')
+        return [False, '']
+    return [True, chosen_cell]
+
+
+def play(cells_taken):
+    """
+    This function lets players play their turn. First
+    action is inputting the cell number and validation
+    """
+    while True:
+        valid = validate_play(cells_taken)
+        if valid[0]:
+            valid_choice = valid[1]
+            break
+    return valid_choice
+
+
 def main():
     """
     Core function of the game
     """
     print("\nWelcome to Tic Tac Toe. Enter the grid numbrs",
           "to play your move.")
-    grid_values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    # The following variable keeps thack of cells already played
+    grid_values = [(i+1) for i in range(9)]
     print_grid(grid_values)
-    grid_values = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+    grid_values = [' ' for i in range(9)]
     # The following variable stores player1's moves
     player1 = []
     # The following variable stores player2's moves
@@ -128,14 +168,21 @@ def main():
 
     # The following loop runs 9 times, which is the number of cells
     # that can be filled.
+    print_grid(grid_values)
     for i in range(9):
         # Each time, player1 and player 2 lists store each
         # player's moves.
-        print_grid(grid_values)
         if (i + 1) % 2 == 0:
             print('player 2 turn')
         else:
             print('player 1 turn')
+            played_cell = play(grid_values)
+            print(f'\nThe function returns {played_cell}')
+            grid_values[played_cell - 1] = preferences['p1']
+            print(f'Grid values are as follows:\n{grid_values}')
+            player1.append(played_cell)
+            print(f'Player1 moves are: {player1}')
+        print_grid(grid_values)
 
 
 main()
