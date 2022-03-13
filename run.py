@@ -97,15 +97,6 @@ def validate_play(cells):
     chosen_cell = input('Enter the cell number to play your turn\n')
     try:
         chosen_cell = int(chosen_cell)
-        # temporary check
-        if cells[chosen_cell] == ' ':
-            placeholder = '[spazio]'
-        else:
-            placeholder = cells[chosen_cell]
-        # fine temporary check
-        print(f'Input converted into int: {chosen_cell}. Content',
-              f'of the cell picked: {placeholder}. The list',
-              f'passed as parameter is:\n{cells}')
         if chosen_cell < 1 or chosen_cell > 9 or cells[chosen_cell - 1] != ' ':
             print('\nInvalid input. Choose an empty cell, by',
                   'entering a number between 1 and 9')
@@ -121,6 +112,7 @@ def play(cells_taken):
     This function lets players play their turn. First
     action is inputting the cell number and validation
     """
+    # The following loop is for an actual player, not PC
     while True:
         valid = validate_play(cells_taken)
         if valid[0]:
@@ -129,13 +121,24 @@ def play(cells_taken):
     return valid_choice
 
 
+def pc_move(cells):
+    """
+    This function determines the pc move by checking
+    already-filled cells.
+    """
+    random_index = random.randint(0, 8)
+    while cells[random_index] != ' ':
+        random_index = random.randint(0, 8)
+    return random_index
+
+
 def main():
     """
     Core function of the game
     """
     print("\nWelcome to Tic Tac Toe. Enter the grid numbrs",
           "to play your move.")
-    # The following variable keeps thack of cells already played
+    # The following variable keeps track of cells already played
     grid_values = [(i+1) for i in range(9)]
     print_grid(grid_values)
     grid_values = [' ' for i in range(9)]
@@ -174,15 +177,22 @@ def main():
         # player's moves.
         if (i + 1) % 2 == 0:
             print('player 2 turn')
+            # If the player2 nature is PC, it randomly fills
+            # cells via grid_values
+            if p2_nature == 'PC':
+                pc_index = pc_move(grid_values)
+                grid_values[pc_index] = preferences['p2']
+            player2.append(pc_index + 1)
+            player2.sort()
         else:
             print('player 1 turn')
             played_cell = play(grid_values)
-            print(f'\nThe function returns {played_cell}')
             grid_values[played_cell - 1] = preferences['p1']
-            print(f'Grid values are as follows:\n{grid_values}')
             player1.append(played_cell)
-            print(f'Player1 moves are: {player1}')
+            player1.sort()
         print_grid(grid_values)
+        print(f'Player1 has played {player1} so far...\nPlayer2 has played',
+              f'{player2} so far...\nOverall grid: {grid_values}')
 
 
 main()
