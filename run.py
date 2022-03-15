@@ -191,7 +191,7 @@ def main():
     """
     Core function of the game
     """
-    print("\nWelcome to Tic Tac Toe. Enter the grid numbrs",
+    print("\nWelcome to Tic Tac Toe. Enter the grid numbers",
           "to play your move.")
     # The following variable keeps track of cells already played
     grid_values = [(i+1) for i in range(9)]
