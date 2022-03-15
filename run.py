@@ -241,24 +241,20 @@ def main():
                 grid.moves[played_cell - 1] = player2.preference
                 player2.moves.append(played_cell)
             player2.moves.sort()
-            if i > 4:
-                check = player2.check_win()
-                if check:
-                    print("The winner is Player2")
-                    grid.print_grid()
-                    break
         else:
             print('\nPLAYER 1 TURN')
             played_cell = grid.play()
             grid.moves[played_cell - 1] = player1.preference
             player1.moves.append(played_cell)
             player1.moves.sort()
-            if i > 4:
-                check = player1.check_win()
-                if check:
-                    print("The winner is Player1")
-                    grid.print_grid()
-                    break
+
+        check = ((player1 if (i + 1) % 2 != 0 else player2).check_win()
+                 if i > 3 else False)
+        if check:
+            print(f"The winner is:"
+                  f"{' player1' if (i + 1) % 2 != 0 else ' player2'}")
+            grid.print_grid()
+            break
         grid.print_grid()
 
 
