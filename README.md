@@ -113,7 +113,7 @@ Given the essential colour combination, the application presents the user with c
 ![first turn](docs/turn.jpg)
 
 * Error messages are shown in red, should the user enter an invalid input.
-![error](docs/invalid _input.jpg)
+![error](docs/invalid_input.jpg)
 
 * Finally, the game communicates the winner, if any.
 ![end](docs/scoreboard_play_again.jpg)
