@@ -1,2 +1,0 @@
-# Your requirements go here
-pip install colorama
