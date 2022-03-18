@@ -255,7 +255,7 @@ def game_loop(gmode):
             grid.print_grid()
             return (i + 1) % 2
         grid.print_grid()
-        time.sleep(1.5)
+        time.sleep(0.8)
 
 
 def main():
