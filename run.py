@@ -1,5 +1,7 @@
 import random
 import time
+from colorama import init, Fore
+init()
 
 
 class Player:
@@ -21,7 +23,7 @@ class Player:
         """
 
         print("\n")
-        print("\t     |     |")
+        print(Fore.YELLOW + "\t     |     |")
         print(f"\t  {self.moves[0]}  |  {self.moves[1]}  | ",
               f"{self.moves[2]}")
         print('\t_____|_____|_____')
@@ -55,17 +57,17 @@ class Player:
         symbol_func both to break the validation loop and store the
         correct input for the player.
         """
-        print("\nEnter '1' to play with X\n")
+        print(Fore.YELLOW + "\nEnter '1' to play with X\n")
         print("Enter '2' to play with O\n")
         print("Enter '3' to play with ★\n")
         symbol = input("Pick the symbol that you want to play with:\n")
         try:
             symbol = int(symbol)
             if symbol < 1 or symbol > 3:
-                print('\nYou can choose options listed above only')
-                raise ValueError('Input out of range')
+                print(Fore.RED + '\nYou can choose options listed above only')
+                raise ValueError(Fore.RED + 'Input out of range')
         except (ValueError, UnicodeDecodeError):
-            print('Try again. Choose 1, 2, or 3\n')
+            print(Fore.RED + 'Try again. Choose 1, 2, or 3\n')
             return [False, None]
         return [True, symbol]
 
@@ -120,16 +122,17 @@ class Player:
         """
         This function validates the input once started playing
         """
-        chosen_cell = input('Enter the cell number to play your turn\n')
+        print(Fore.YELLOW + 'Enter the cell number to play your turn\n')
+        chosen_cell = input()
         try:
             chosen_cell = int(chosen_cell)
             if chosen_cell < 1 or chosen_cell > 9 or \
                self.moves[chosen_cell - 1] != ' ':
-                print('\nInvalid input. Choose an empty cell, by',
+                print(Fore.RED + '\nInvalid input. Choose an empty cell, by',
                       'entering a number between 1 and 9')
-                raise ValueError('Input out of available range')
+                raise ValueError(Fore.RED + 'Input out of available range')
         except (ValueError, UnicodeDecodeError):
-            print('Try again. Choose an empty cell\n')
+            print(Fore.RED + 'Try again. Choose an empty cell\n')
             return [False, '']
         return [True, chosen_cell]
 
@@ -171,16 +174,16 @@ def ptype_v():
     """
     while True:
         try:
-            print('\nGAME MODE\n')
+            print(Fore.YELLOW + '\nGAME MODE\n')
             gmode = int(input("\nEnter '1' for 1vPC and '2' for 1v1\n"))
             if gmode < 1 or gmode > 2:
-                print('\nInvalid input. Choose a valid mode, by',
+                print(Fore.RED + '\nInvalid input. Choose a valid mode, by',
                       'entering 1 or 2')
-                raise ValueError('Input out of available range')
+                raise ValueError(Fore.RED + 'Input out of available range')
             else:
                 break
         except (ValueError, UnicodeDecodeError):
-            print('Try again. Choose 1 or 2\n')
+            print(Fore.RED + 'Try again. Choose 1 or 2\n')
     return 'P' if gmode == 1 else 'H'
 
 
@@ -195,8 +198,6 @@ def game_loop(gmode):
     # shares a few methods and characteristics
     grid = Player('Grid', 'G', [])
     # The following variable keeps track of cells already played
-    grid.moves = [(i+1) for i in range(9)]
-    grid.print_grid()
     grid.moves = [' ' for i in range(9)]
 
     # player2 instance: the game mode determines its nature
@@ -204,14 +205,14 @@ def game_loop(gmode):
     # player1 instance
     player1 = Player('P1', 'H', [])
 
-    print('\nPLAYER 1')
+    print(Fore.CYAN + '\nPLAYER 1')
     player1.symbol_pref()
     if player2.ptype == 'H':
-        print('\nPLAYER2')
+        print(Fore.CYAN + '\nPLAYER2')
     player2.symbol_pref()
     while player2.preference == player1.preference:
         if player2.ptype == 'H':
-            print('\nYou cannot choose the same symbol. Pick',
+            print(Fore.RED + '\nYou cannot choose the same symbol. Pick',
                   'a different option. Player1\'s choice is:\n',
                   f'{player1.preference}')
         player2.preference = ''
@@ -228,7 +229,7 @@ def game_loop(gmode):
         # Each time, player1 and player 2 lists store each
         # player's moves.
         if (i + 1) % 2 == 0:
-            print('\nPLAYER 2 TURN')
+            print(Fore.CYAN + '\nPLAYER 2 TURN')
             # If the player2 nature is PC, it randomly fills cells
             if player2.ptype == 'P':
                 pc_index = grid.pc_move()
@@ -240,7 +241,7 @@ def game_loop(gmode):
                 player2.moves.append(played_cell)
             player2.moves.sort()
         else:
-            print('\nPLAYER 1 TURN')
+            print(Fore.CYAN + '\nPLAYER 1 TURN')
             played_cell = grid.play()
             grid.moves[played_cell - 1] = player1.preference
             player1.moves.append(played_cell)
@@ -249,7 +250,7 @@ def game_loop(gmode):
         check = ((player1 if (i + 1) % 2 != 0 else player2).check_win()
                  if i > 3 else False)
         if check:
-            print(f"The winner is:"
+            print(Fore.CYAN + f"The winner is:"
                   f"{' player1' if (i + 1) % 2 != 0 else ' player2'}")
             grid.print_grid()
             return (i + 1) % 2
@@ -261,21 +262,39 @@ def main():
     """
     Main function that triggers the game loop above
     """
-    print("\nWelcome to Tic Tac Toe. Enter the grid numbers",
+    print(Fore.CYAN + "\nWelcome to Tic Tac Toe. Enter the grid numbers",
           "to play your move.\n")
+
+    print("\n")
+    print(Fore.YELLOW + "\t     |     |")
+    print("\t  1  |  2  | 3")
+    print('\t_____|_____|_____')
+
+    print("\t     |     |")
+    print("\t  4  |  5  | 6")
+    print('\t_____|_____|_____')
+
+    print("\t     |     |")
+
+    print("\t  7  |  8  | 9")
+    print("\t     |     |")
+    print("\n")
+
     scoreboard = {
         'p1': 0,
         'p2': 0
     }
-    while True:
-        score = game_loop(ptype_v())
+    outer_flag = True
+    ptype = ptype_v()
+    while outer_flag:
+        score = game_loop(ptype)
 
         if score != 0:
             scoreboard['p1'] += 1
         else:
             scoreboard['p2'] += 1
 
-        print('-------------- SCOREBOARD --------------')
+        print(Fore.GREEN + '-------------- SCOREBOARD --------------')
         print('*                                      *')
         print(f"* PLAYER 1: {scoreboard['p1']}          ",
               '               *')
@@ -284,20 +303,24 @@ def main():
         print('*                                      *')
         print('----------------------------------------')
 
-        print("\nDo you wish to play again?")
-        try:
-            keep_playing = int(input("\nEnter '1' to keep playing"
-                                     " and '0' to quit\n"))
-            if keep_playing < 0 or keep_playing > 1:
-                print('\nInvalid input. Choose an action listed',
-                      'above, by entering 1 or 0')
-                raise ValueError('Input out of available range')
-            elif keep_playing == 1:
-                continue
-            else:
-                break
-        except (ValueError, UnicodeDecodeError):
-            print('Try again. Choose 1 or 0\n')
+        print(Fore.CYAN + "\nDo you wish to play again?")
+        break_flag = True
+        while break_flag:
+            try:
+                keep_playing = int(input(Fore.CYAN + "\nEnter '1' to keep"
+                                         " playing and '0' to quit\n"))
+                if keep_playing < 0 or keep_playing > 1:
+                    print(Fore.RED + '\nInvalid input. Choose an action',
+                          ' listed above, by entering 1 or 0')
+                    raise ValueError(Fore.RED + 'Input out of available range')
+                elif keep_playing == 1:
+                    break_flag = False
+                else:
+                    break_flag = False
+                    outer_flag = False
+                    break
+            except (ValueError, UnicodeDecodeError):
+                print(Fore.RED + 'Try again. Choose 1 or 0\n')
 
 
 main()
